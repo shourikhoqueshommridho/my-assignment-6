@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   FaArrowRight,
   FaCheck,
@@ -13,6 +14,8 @@ import { FiTrash2 } from "react-icons/fi";
 import { useWorkout } from "@/context/WorkoutContext";
 
 const MyPlan = () => {
+  const searchParams = useSearchParams();
+
   const {
     todayPlan,
     savedWorkouts,
@@ -22,7 +25,19 @@ const MyPlan = () => {
     markAsDone,
   } = useWorkout();
 
+  // ================= TAB =================
   const [activeTab, setActiveTab] = useState<"plan" | "saved">("plan");
+
+  // URL থেকে tab নির্ধারণ করবে
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+
+    if (tab === "saved") {
+      setActiveTab("saved");
+    } else {
+      setActiveTab("plan");
+    }
+  }, [searchParams]);
 
   // Which data should be displayed
   const currentWorkouts =
@@ -93,7 +108,6 @@ const MyPlan = () => {
         </div>
       </section>
 
-
       {/* ================= STATS ================= */}
       <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 
@@ -115,15 +129,14 @@ const MyPlan = () => {
             </div>
 
             <p className="mt-4 text-3xl font-black">
-              {todayPlan.length}
+              {currentWorkouts.length}
 
               <span className="ml-1 text-base font-medium text-gray-500">
-                / 5
+                {activeTab === "plan" ? "/ 5" : "saved"}
               </span>
             </p>
 
           </div>
-
 
           {/* Minutes */}
           <div className="rounded-2xl border border-white/10 bg-[#111316] p-5">
@@ -149,7 +162,6 @@ const MyPlan = () => {
             </p>
 
           </div>
-
 
           {/* Calories */}
           <div className="rounded-2xl border border-white/10 bg-[#111316] p-5">
@@ -180,7 +192,6 @@ const MyPlan = () => {
 
       </section>
 
-
       {/* ================= TABS ================= */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
@@ -204,7 +215,6 @@ const MyPlan = () => {
               )}
             </button>
 
-
             {/* Saved */}
             <button
               onClick={() => setActiveTab("saved")}
@@ -223,7 +233,6 @@ const MyPlan = () => {
 
           </div>
 
-
           <span className="hidden text-xs font-bold uppercase tracking-widest text-gray-600 sm:block">
             {currentWorkouts.length} items
           </span>
@@ -231,7 +240,6 @@ const MyPlan = () => {
         </div>
 
       </section>
-
 
       {/* ================= CONTENT ================= */}
       <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -245,18 +253,15 @@ const MyPlan = () => {
               <FaCheck className="text-2xl text-gray-600" />
             </div>
 
-
             <h2 className="text-2xl font-black uppercase">
               NOTHING HERE YET
             </h2>
-
 
             <p className="mt-2 max-w-md text-sm leading-6 text-gray-500">
               {activeTab === "plan"
                 ? "You haven't added any workouts to today's plan. Browse the library and pick your next lift."
                 : "You haven't saved any workouts yet. Save your favorite lifts to find them here."}
             </p>
-
 
             {/* Go To Workouts */}
             <Link
@@ -290,15 +295,12 @@ const MyPlan = () => {
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                   />
 
-
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-
 
                   {/* Muscle Group */}
                   <div className="absolute left-4 top-4 rounded-full bg-black/70 px-3 py-1 text-xs font-bold text-[#b7ff00] backdrop-blur">
                     {workout.muscleGroups?.join(" / ")}
                   </div>
-
 
                   {/* Remove */}
                   <button
@@ -311,7 +313,6 @@ const MyPlan = () => {
 
                 </div>
 
-
                 {/* Card Body */}
                 <div className="p-5">
 
@@ -319,11 +320,9 @@ const MyPlan = () => {
                     {workout.name}
                   </h2>
 
-
                   <p className="mt-1 text-sm text-gray-500">
                     {workout.equipment}
                   </p>
-
 
                   {/* Information */}
                   <div className="mt-5 grid grid-cols-3 gap-2 border-y border-white/10 py-4">
@@ -338,7 +337,6 @@ const MyPlan = () => {
                       </p>
                     </div>
 
-
                     <div>
                       <p className="text-[10px] font-bold uppercase tracking-wider text-gray-600">
                         Calories
@@ -348,7 +346,6 @@ const MyPlan = () => {
                         {workout.caloriesBurned} kcal
                       </p>
                     </div>
-
 
                     <div>
                       <p className="text-[10px] font-bold uppercase tracking-wider text-gray-600">
@@ -362,7 +359,6 @@ const MyPlan = () => {
 
                   </div>
 
-
                   {/* Buttons */}
                   <div className="mt-5 flex gap-2">
 
@@ -373,7 +369,6 @@ const MyPlan = () => {
                     >
                       View Details
                     </Link>
-
 
                     {/* Done */}
                     {activeTab === "plan" && (
