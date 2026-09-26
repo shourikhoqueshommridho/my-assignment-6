@@ -24,10 +24,8 @@ const MyPlan = () => {
     markAsDone,
   } = useWorkout();
   const [activeTab, setActiveTab] = useState<"plan" | "saved">("plan");
-
-  const [sortBy, setSortBy] = useState<SortOption>("duration");
-
-  useEffect(() => {
+ const [sortBy, setSortBy] = useState<SortOption>("duration");
+useEffect(() => {
     const tab = searchParams.get("tab");
 
     if (tab === "saved") {
@@ -37,22 +35,18 @@ const MyPlan = () => {
     }
   }, [searchParams]);
 
-  // Current workouts
   const currentWorkouts =
     activeTab === "plan" ? todayPlan : savedWorkouts;
-
-  // ================= SORTED WORKOUTS =================
   const sortedWorkouts = useMemo(() => {
     return [...currentWorkouts].sort((a, b) => {
       if (sortBy === "duration") {
         return a.duration - b.duration;
       }
 
-      if (sortBy === "calories") {
+ if (sortBy === "calories") {
         return a.caloriesBurned - b.caloriesBurned;
       }
-
-      if (sortBy === "rating") {
+if (sortBy === "rating") {
         return b.rating - a.rating;
       }
 
@@ -60,16 +54,13 @@ const MyPlan = () => {
     });
   }, [currentWorkouts, sortBy]);
 
-  // ================= TOTAL MINUTES =================
   const totalMinutes = useMemo(() => {
     return currentWorkouts.reduce(
       (total, workout) => total + Number(workout.duration || 0),
       0
     );
   }, [currentWorkouts]);
-
-  // ================= TOTAL CALORIES =================
-  const totalCalories = useMemo(() => {
+ const totalCalories = useMemo(() => {
     return currentWorkouts.reduce(
       (total, workout) =>
         total + Number(workout.caloriesBurned || 0),
@@ -77,8 +68,7 @@ const MyPlan = () => {
     );
   }, [currentWorkouts]);
 
-  // ================= REMOVE =================
-  const handleRemove = (id: number) => {
+ const handleRemove = (id: number) => {
     if (activeTab === "plan") {
       removeFromPlan(id);
     } else {
@@ -88,11 +78,7 @@ const MyPlan = () => {
 
   return (
     <main className="min-h-screen bg-[#0b0c0e] text-white">
-
-      {/* =====================================================
-          HERO
-      ====================================================== */}
-      <section>
+  <section>
         <div className="mx-auto max-w-7xl px-4 pb-8 pt-12 sm:px-6 lg:px-8">
 
           <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#b7ff00]">
@@ -110,14 +96,9 @@ const MyPlan = () => {
         </div>
       </section>
 
-      {/* =====================================================
-          STATS
-      ====================================================== */}
-      <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
+    <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
 
         <div className="grid grid-cols-1 overflow-hidden rounded-2xl border border-[#252a33] bg-[#111318] sm:grid-cols-3">
-
-          {/* Exercises */}
           <div className="px-6 py-6 sm:border-r sm:border-[#252a33]">
             <p className="text-xs text-gray-500">
               Exercises
@@ -135,8 +116,6 @@ const MyPlan = () => {
               )}
             </p>
           </div>
-
-          {/* Minutes */}
           <div className="px-6 py-6 sm:border-r sm:border-[#252a33]">
             <p className="text-xs text-gray-500">
               Minutes
@@ -146,8 +125,6 @@ const MyPlan = () => {
               {totalMinutes}
             </p>
           </div>
-
-          {/* Calories */}
           <div className="px-6 py-6">
             <p className="text-xs text-gray-500">
               Calories
@@ -161,18 +138,10 @@ const MyPlan = () => {
         </div>
 
       </section>
-
-      {/* =====================================================
-          TABS + SORT
-      ====================================================== */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         <div className="flex flex-col gap-4 border-b border-[#252a33] pb-6 sm:flex-row sm:items-center sm:justify-between">
-
-          {/* Tabs */}
           <div className="flex w-fit rounded-xl border border-[#252a33] bg-[#15181e] p-1">
-
-            {/* Today's Plan */}
             <button
               type="button"
               onClick={() => setActiveTab("plan")}
@@ -184,9 +153,7 @@ const MyPlan = () => {
             >
               Today&apos;s Plan
             </button>
-
-            {/* Saved */}
-            <button
+          <button
               type="button"
               onClick={() => setActiveTab("saved")}
               className={`rounded-lg px-5 py-2 text-xs font-bold transition ${
@@ -199,8 +166,6 @@ const MyPlan = () => {
             </button>
 
           </div>
-
-          {/* Sort */}
           <div className="flex items-center gap-3">
             <span className="text-xs text-gray-500">
               Sort By
@@ -238,13 +203,7 @@ const MyPlan = () => {
         </div>
 
       </section>
-
-      {/* =====================================================
-          CONTENT
-      ====================================================== */}
       <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-
-        {/* ================= EMPTY STATE ================= */}
         {currentWorkouts.length === 0 ? (
 
           <div className="flex min-h-[350px] flex-col items-center justify-center rounded-2xl border border-dashed border-[#252a33] bg-[#111318] px-6 text-center">
@@ -274,8 +233,6 @@ const MyPlan = () => {
           </div>
 
         ) : (
-
-          /* ================= WORKOUT LIST ================= */
           <div className="space-y-4">
 
             {sortedWorkouts.map((workout) => (
@@ -284,8 +241,6 @@ const MyPlan = () => {
                 key={workout.id}
                 className="group flex flex-col gap-5 rounded-2xl border border-[#252a33] bg-[#111318] p-4 transition duration-300 hover:border-[#b7ff00]/40 sm:flex-row sm:items-center"
               >
-
-                {/* ================= IMAGE ================= */}
                 <div className="relative h-44 w-full shrink-0 overflow-hidden rounded-xl sm:h-20 sm:w-36">
 
                   <Image
@@ -297,8 +252,6 @@ const MyPlan = () => {
                   />
 
                 </div>
-
-                {/* ================= WORKOUT INFO ================= */}
                 <div className="min-w-0 flex-1">
 
                   <h2 className="truncate text-lg font-black uppercase text-white">
@@ -308,27 +261,19 @@ const MyPlan = () => {
                   <p className="mt-0.5 text-sm text-gray-500">
                     {workout.equipment}
                   </p>
-
-                  {/* Stats */}
                   <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-gray-400">
-
-                    {/* Duration */}
                     <div className="flex items-center gap-1.5">
                       <FaRegClock className="text-[#b7ff00]" />
                       <span>
                         {workout.duration} min
                       </span>
                     </div>
-
-                    {/* Calories */}
                     <div className="flex items-center gap-1.5">
                       <FaFire className="text-[#b7ff00]" />
                       <span>
                         {workout.caloriesBurned} kcal
                       </span>
                     </div>
-
-                    {/* Rating */}
                     <div className="flex items-center gap-1.5">
                       <span className="text-[#b7ff00]">
                         ☆
@@ -342,19 +287,13 @@ const MyPlan = () => {
                   </div>
 
                 </div>
-
-                {/* ================= ACTIONS ================= */}
                 <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-
-                  {/* View Details */}
                   <Link
                     href={`/workouts/${workout.id}`}
                     className="btn btn-sm rounded-full border border-[#39404c] bg-transparent px-4 text-xs font-medium text-white hover:border-[#b7ff00] hover:bg-transparent hover:text-[#b7ff00] sm:px-5"
                   >
                     View Details
                   </Link>
-
-                  {/* Mark as Done */}
                   {activeTab === "plan" && (
                     <button
                       type="button"
@@ -371,8 +310,6 @@ const MyPlan = () => {
                       </span>
                     </button>
                   )}
-
-                  {/* Remove */}
                   <button
                     type="button"
                     onClick={() => handleRemove(workout.id)}

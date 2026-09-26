@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 
+import { toast } from "react-toastify";
 import type { Workout } from "@/types/workout";
 
 type WorkoutContextType = {
@@ -38,7 +39,6 @@ export const WorkoutProvider = ({
   const [todayPlan, setTodayPlan] = useState<Workout[]>([]);
   const [savedWorkouts, setSavedWorkouts] = useState<Workout[]>([]);
 
-  // Load data from localStorage
   useEffect(() => {
     const storedPlan = localStorage.getItem("fitlog-plan");
     const storedSaved = localStorage.getItem("fitlog-saved");
@@ -52,12 +52,10 @@ export const WorkoutProvider = ({
     }
   }, []);
 
-  // Save today's plan
   useEffect(() => {
     localStorage.setItem("fitlog-plan", JSON.stringify(todayPlan));
   }, [todayPlan]);
 
-  // Save saved workouts
   useEffect(() => {
     localStorage.setItem(
       "fitlog-saved",
@@ -65,10 +63,8 @@ export const WorkoutProvider = ({
     );
   }, [savedWorkouts]);
 
-  // Add workout to today's plan
   const addToPlan = (workout: Workout) => {
     setTodayPlan((previous) => {
-      // Already exists
       const alreadyExists = previous.some(
         (item) => item.id === workout.id
       );
@@ -77,9 +73,10 @@ export const WorkoutProvider = ({
         return previous;
       }
 
-      // Maximum 5 workouts
       if (previous.length >= 5) {
-        alert("You can add maximum 5 workouts to today's plan.");
+        toast.error(
+          "You can add maximum 5 workouts to today's plan."
+        );
         return previous;
       }
 
@@ -87,19 +84,16 @@ export const WorkoutProvider = ({
     });
   };
 
-  // Remove one workout from today's plan
   const removeFromPlan = (id: number) => {
     setTodayPlan((previous) =>
       previous.filter((workout) => workout.id !== id)
     );
   };
 
-  // Remove all workouts from today's plan
   const removeAllFromPlan = () => {
     setTodayPlan([]);
   };
 
-  // Save workout
   const saveWorkout = (workout: Workout) => {
     setSavedWorkouts((previous) => {
       const alreadySaved = previous.some(
@@ -114,26 +108,22 @@ export const WorkoutProvider = ({
     });
   };
 
-  // Remove workout from saved
   const removeFromSaved = (id: number) => {
     setSavedWorkouts((previous) =>
       previous.filter((workout) => workout.id !== id)
     );
   };
 
-  // Mark workout as done
   const markAsDone = (id: number) => {
     setTodayPlan((previous) =>
       previous.filter((workout) => workout.id !== id)
     );
   };
 
-  // Check if workout is already in today's plan
   const isInPlan = (id: number) => {
     return todayPlan.some((workout) => workout.id === id);
   };
 
-  // Check if workout is already saved
   const isSaved = (id: number) => {
     return savedWorkouts.some((workout) => workout.id === id);
   };
@@ -158,7 +148,6 @@ export const WorkoutProvider = ({
   );
 };
 
-// Custom hook
 export const useWorkout = () => {
   const context = useContext(WorkoutContext);
 
