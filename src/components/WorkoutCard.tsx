@@ -2,16 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaClock, FaFire, FaStar } from "react-icons/fa";
 
-type Workout = {
-  id: number;
-  name: string;
-  equipment: string;
-  image: string;
-  muscleGroups: string[];
-  duration: number;
-  caloriesBurned: number;
-  rating: number;
-};
+
 
 type WorkoutCardProps = {
   workout: Workout;

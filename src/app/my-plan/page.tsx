@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -289,11 +289,13 @@ const MyPlan = () => {
                 {/* Image */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-black">
 
-                  <img
-                    src={workout.image}
-                    alt={workout.name}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                  />
+                  <Image
+    src={workout.image}
+    alt={workout.name}
+    fill
+    
+    className="object-cover transition duration-500 group-hover:scale-105"
+  />
 
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
 
@@ -314,7 +316,7 @@ const MyPlan = () => {
                 </div>
 
                 {/* Card Body */}
-                <div className="p-5">
+                <div className="p-5 ">
 
                   <h2 className="line-clamp-1 text-xl font-black uppercase">
                     {workout.name}
