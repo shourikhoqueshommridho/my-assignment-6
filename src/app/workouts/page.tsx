@@ -1,4 +1,6 @@
 import WorkoutDetails from "@/components/WorkoutDetails";
+import { notFound } from "next/navigation";
+import type { Workout } from "@/types/workout";
 
 type Props = {
   params: Promise<{
@@ -9,16 +11,25 @@ type Props = {
 const WorkoutDetailsPage = async ({ params }: Props) => {
   const { id } = await params;
 
-  const res = await fetch("http://localhost:3000/data.json");
-
-  const workouts = await res.json();
-
-  const workout = workouts.find(
-    (item: { id: number }) => item.id === Number(id)
+  const res = await fetch(
+    `https://api.api-store.workers.dev/api/fitlog/${id}`,
+    {
+      next: {
+        revalidate: 300,
+      },
+    }
   );
 
+  if (!res.ok) {
+    notFound();
+  }
+
+  const result = await res.json();
+
+  const workout: Workout = result.data;
+
   if (!workout) {
-    return <div>Workout not found</div>;
+    notFound();
   }
 
   return <WorkoutDetails workout={workout} />;
