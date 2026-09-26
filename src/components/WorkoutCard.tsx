@@ -1,29 +1,13 @@
 "use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import { FaClock, FaFire, FaStar, FaPlus } from "react-icons/fa";
-
-import { useWorkout } from "@/context/WorkoutContext";
 import type { Workout } from "@/types/workout";
-
 type WorkoutCardProps = {
   workout: Workout;
 };
-
 const WorkoutCard = ({ workout }: WorkoutCardProps) => {
-  const { addToPlan, isInPlan } = useWorkout();
-
-  const alreadyInPlan = isInPlan(workout.id);
-
-  const handleAddToPlan = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    addToPlan(workout);
-  };
-
-  return (
+    return (
     <Link
       href={`/workouts/${workout.id}`}
       className="group block h-full"
@@ -79,9 +63,7 @@ const WorkoutCard = ({ workout }: WorkoutCardProps) => {
               <span>{workout.rating}</span>
             </div>
           </div>
-
-         
-        </div>
+  </div>
       </div>
     </Link>
   );

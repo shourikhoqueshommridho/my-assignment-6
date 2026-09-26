@@ -39,12 +39,10 @@ const WorkoutLibrary = async () => {
         <h2 className="text-3xl font-black uppercase text-white md:text-4xl">
           The Library
         </h2>
-
         <p className="mt-1 text-gray-500">
           Twelve lifts covering every major muscle group.
         </p>
       </div>
-
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         {workouts.map((workout) => (
           <WorkoutCard
@@ -56,5 +54,4 @@ const WorkoutLibrary = async () => {
     </section>
   );
 };
-
 export default WorkoutLibrary;

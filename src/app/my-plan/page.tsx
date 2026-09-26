@@ -1,5 +1,4 @@
 "use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -75,8 +74,7 @@ if (sortBy === "rating") {
       removeFromSaved(id);
     }
   };
-
-  return (
+return (
     <main className="min-h-screen bg-[#0b0c0e] text-white">
   <section>
         <div className="mx-auto max-w-7xl px-4 pb-8 pt-12 sm:px-6 lg:px-8">
@@ -320,19 +318,13 @@ if (sortBy === "rating") {
                   </button>
 
                 </div>
-
               </article>
-
             ))}
 
           </div>
-
         )}
-
       </section>
-
-    </main>
+  </main>
   );
 };
-
 export default MyPlan;

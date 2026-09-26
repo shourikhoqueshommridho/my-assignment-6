@@ -1,5 +1,4 @@
 "use client";
-
 import Image from "next/image";
 import {
   FaCalendarPlus,
@@ -8,10 +7,8 @@ import {
   FaStar,
 } from "react-icons/fa";
 import { FiBookmark } from "react-icons/fi";
-
 import { useWorkout } from "@/context/WorkoutContext";
 import type { Workout } from "@/types/workout";
-
 type WorkoutDetailsProps = {
   workout: Workout;
 };
