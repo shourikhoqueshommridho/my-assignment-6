@@ -1,3 +1,4 @@
+
 import WorkoutDetails from "@/components/WorkoutDetails";
 import { notFound } from "next/navigation";
 import type { Workout } from "@/types/workout";
@@ -24,13 +25,7 @@ const WorkoutDetailsPage = async ({ params }: Props) => {
     notFound();
   }
 
-  const result = await res.json();
-
-  const workout: Workout = result.data;
-
-  if (!workout) {
-    notFound();
-  }
+  const workout: Workout = await res.json();
 
   return <WorkoutDetails workout={workout} />;
 };

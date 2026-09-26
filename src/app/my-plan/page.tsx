@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -6,13 +7,12 @@ import { useSearchParams } from "next/navigation";
 import {
   FaArrowRight,
   FaCheck,
+  FaChevronDown,
   FaFire,
   FaRegClock,
 } from "react-icons/fa";
-import { FiTrash2 } from "react-icons/fi";
-
 import { useWorkout } from "@/context/WorkoutContext";
-
+type SortOption = "duration" | "calories" | "rating";
 const MyPlan = () => {
   const searchParams = useSearchParams();
 
@@ -20,15 +20,13 @@ const MyPlan = () => {
     todayPlan,
     savedWorkouts,
     removeFromPlan,
-    removeAllFromPlan,
     removeFromSaved,
     markAsDone,
   } = useWorkout();
-
-  // ================= TAB =================
   const [activeTab, setActiveTab] = useState<"plan" | "saved">("plan");
 
-  // URL থেকে tab নির্ধারণ করবে
+  const [sortBy, setSortBy] = useState<SortOption>("duration");
+
   useEffect(() => {
     const tab = searchParams.get("tab");
 
@@ -39,20 +37,38 @@ const MyPlan = () => {
     }
   }, [searchParams]);
 
-  // Which data should be displayed
+  // Current workouts
   const currentWorkouts =
     activeTab === "plan" ? todayPlan : savedWorkouts;
 
-  // Total duration
+  // ================= SORTED WORKOUTS =================
+  const sortedWorkouts = useMemo(() => {
+    return [...currentWorkouts].sort((a, b) => {
+      if (sortBy === "duration") {
+        return a.duration - b.duration;
+      }
+
+      if (sortBy === "calories") {
+        return a.caloriesBurned - b.caloriesBurned;
+      }
+
+      if (sortBy === "rating") {
+        return b.rating - a.rating;
+      }
+
+      return 0;
+    });
+  }, [currentWorkouts, sortBy]);
+
+  // ================= TOTAL MINUTES =================
   const totalMinutes = useMemo(() => {
     return currentWorkouts.reduce(
-      (total, workout) =>
-        total + Number(workout.duration || 0),
+      (total, workout) => total + Number(workout.duration || 0),
       0
     );
   }, [currentWorkouts]);
 
-  // Total calories
+  // ================= TOTAL CALORIES =================
   const totalCalories = useMemo(() => {
     return currentWorkouts.reduce(
       (total, workout) =>
@@ -61,7 +77,7 @@ const MyPlan = () => {
     );
   }, [currentWorkouts]);
 
-  // Remove workout
+  // ================= REMOVE =================
   const handleRemove = (id: number) => {
     if (activeTab === "plan") {
       removeFromPlan(id);
@@ -73,184 +89,168 @@ const MyPlan = () => {
   return (
     <main className="min-h-screen bg-[#0b0c0e] text-white">
 
-      {/* ================= HERO ================= */}
-      <section className="border-b border-white/10">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      {/* =====================================================
+          HERO
+      ====================================================== */}
+      <section>
+        <div className="mx-auto max-w-7xl px-4 pb-8 pt-12 sm:px-6 lg:px-8">
 
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#b7ff00]">
+            FITLOG
+          </p>
 
-            <div>
-              <p className="mb-3 text-sm font-bold uppercase tracking-[0.25em] text-[#b7ff00]">
-                FITLOG
-              </p>
+          <h1 className="text-4xl font-black uppercase tracking-tight sm:text-5xl">
+            MY PLAN
+          </h1>
 
-              <h1 className="text-4xl font-black uppercase tracking-tight sm:text-5xl">
-                MY PLAN
-              </h1>
+          <p className="mt-3 text-sm text-gray-400 sm:text-base">
+            Cap of five lifts for today. Finish them, then load more.
+          </p>
 
-              <p className="mt-3 max-w-xl text-sm leading-6 text-gray-400 sm:text-base">
-                Cap of five lifts for today. Finish them, then load more.
-              </p>
-            </div>
-
-            {/* Remove All */}
-            {todayPlan.length > 0 && activeTab === "plan" && (
-              <button
-                onClick={removeAllFromPlan}
-                className="btn btn-outline w-fit border-white/15 bg-transparent text-white hover:border-[#b7ff00] hover:bg-[#b7ff00] hover:text-black"
-              >
-                <FiTrash2 />
-                Remove All
-              </button>
-            )}
-
-          </div>
         </div>
       </section>
 
-      {/* ================= STATS ================= */}
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      {/* =====================================================
+          STATS
+      ====================================================== */}
+      <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 overflow-hidden rounded-2xl border border-[#252a33] bg-[#111318] sm:grid-cols-3">
 
           {/* Exercises */}
-          <div className="rounded-2xl border border-white/10 bg-[#111316] p-5">
-
-            <div className="flex items-center justify-between">
-
-              <span className="text-xs font-bold uppercase tracking-widest text-gray-500">
-                Exercises
-              </span>
-
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#b7ff00]/10 text-[#b7ff00]">
-                <FaCheck />
-              </span>
-
-            </div>
-
-            <p className="mt-4 text-3xl font-black">
-              {currentWorkouts.length}
-
-              <span className="ml-1 text-base font-medium text-gray-500">
-                {activeTab === "plan" ? "/ 5" : "saved"}
-              </span>
+          <div className="px-6 py-6 sm:border-r sm:border-[#252a33]">
+            <p className="text-xs text-gray-500">
+              Exercises
             </p>
 
+            <p className="mt-2 text-4xl font-black">
+              <span className="text-[#b7ff00]">
+                {currentWorkouts.length}
+              </span>
+
+              {activeTab === "plan" && (
+                <span className="text-white">
+                  /5
+                </span>
+              )}
+            </p>
           </div>
 
           {/* Minutes */}
-          <div className="rounded-2xl border border-white/10 bg-[#111316] p-5">
-
-            <div className="flex items-center justify-between">
-
-              <span className="text-xs font-bold uppercase tracking-widest text-gray-500">
-                Minutes
-              </span>
-
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#b7ff00]/10 text-[#b7ff00]">
-                <FaRegClock />
-              </span>
-
-            </div>
-
-            <p className="mt-4 text-3xl font-black">
-              {totalMinutes}
-
-              <span className="ml-1 text-base font-medium text-gray-500">
-                min
-              </span>
+          <div className="px-6 py-6 sm:border-r sm:border-[#252a33]">
+            <p className="text-xs text-gray-500">
+              Minutes
             </p>
 
+            <p className="mt-2 text-4xl font-black">
+              {totalMinutes}
+            </p>
           </div>
 
           {/* Calories */}
-          <div className="rounded-2xl border border-white/10 bg-[#111316] p-5">
-
-            <div className="flex items-center justify-between">
-
-              <span className="text-xs font-bold uppercase tracking-widest text-gray-500">
-                Calories
-              </span>
-
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#b7ff00]/10 text-[#b7ff00]">
-                <FaFire />
-              </span>
-
-            </div>
-
-            <p className="mt-4 text-3xl font-black">
-              {totalCalories}
-
-              <span className="ml-1 text-base font-medium text-gray-500">
-                kcal
-              </span>
+          <div className="px-6 py-6">
+            <p className="text-xs text-gray-500">
+              Calories
             </p>
 
+            <p className="mt-2 text-4xl font-black">
+              {totalCalories}
+            </p>
           </div>
 
         </div>
 
       </section>
 
-      {/* ================= TABS ================= */}
+      {/* =====================================================
+          TABS + SORT
+      ====================================================== */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-        <div className="flex items-center justify-between border-b border-white/10">
+        <div className="flex flex-col gap-4 border-b border-[#252a33] pb-6 sm:flex-row sm:items-center sm:justify-between">
 
-          <div className="flex gap-8">
+          {/* Tabs */}
+          <div className="flex w-fit rounded-xl border border-[#252a33] bg-[#15181e] p-1">
 
             {/* Today's Plan */}
             <button
+              type="button"
               onClick={() => setActiveTab("plan")}
-              className={`relative py-4 text-sm font-bold uppercase tracking-wider ${
+              className={`rounded-lg px-5 py-2 text-xs font-bold transition ${
                 activeTab === "plan"
-                  ? "text-[#b7ff00]"
+                  ? "bg-[#252a33] text-white"
                   : "text-gray-500 hover:text-white"
               }`}
             >
               Today&apos;s Plan
-
-              {activeTab === "plan" && (
-                <span className="absolute bottom-0 left-0 h-0.5 w-full bg-[#b7ff00]" />
-              )}
             </button>
 
             {/* Saved */}
             <button
+              type="button"
               onClick={() => setActiveTab("saved")}
-              className={`relative py-4 text-sm font-bold uppercase tracking-wider ${
+              className={`rounded-lg px-5 py-2 text-xs font-bold transition ${
                 activeTab === "saved"
-                  ? "text-[#b7ff00]"
+                  ? "bg-[#252a33] text-white"
                   : "text-gray-500 hover:text-white"
               }`}
             >
               Saved
-
-              {activeTab === "saved" && (
-                <span className="absolute bottom-0 left-0 h-0.5 w-full bg-[#b7ff00]" />
-              )}
             </button>
 
           </div>
 
-          <span className="hidden text-xs font-bold uppercase tracking-widest text-gray-600 sm:block">
-            {currentWorkouts.length} items
-          </span>
+          {/* Sort */}
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-gray-500">
+              Sort By
+            </span>
+
+            <div className="relative">
+
+              <select
+                value={sortBy}
+                onChange={(event) =>
+                  setSortBy(event.target.value as SortOption)
+                }
+                className="appearance-none rounded-xl border border-[#252a33] bg-[#111318] py-2 pl-4 pr-9 text-xs font-medium text-white outline-none transition focus:border-[#b7ff00]"
+              >
+                <option value="duration">
+                  Duration
+                </option>
+
+                <option value="calories">
+                  Calories
+                </option>
+
+                <option value="rating">
+                  Rating
+                </option>
+              </select>
+
+              <FaChevronDown
+                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-500"
+              />
+
+            </div>
+          </div>
 
         </div>
 
       </section>
 
-      {/* ================= CONTENT ================= */}
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      {/* =====================================================
+          CONTENT
+      ====================================================== */}
+      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
 
+        {/* ================= EMPTY STATE ================= */}
         {currentWorkouts.length === 0 ? (
 
-          /* ================= EMPTY STATE ================= */
-          <div className="flex min-h-[400px] flex-col items-center justify-center rounded-2xl border border-dashed border-white/10 bg-[#111316] px-6 text-center">
+          <div className="flex min-h-[350px] flex-col items-center justify-center rounded-2xl border border-dashed border-[#252a33] bg-[#111318] px-6 text-center">
 
-            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-white/5">
-              <FaCheck className="text-2xl text-gray-600" />
+            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-white/5">
+              <FaCheck className="text-xl text-gray-600" />
             </div>
 
             <h2 className="text-2xl font-black uppercase">
@@ -263,7 +263,6 @@ const MyPlan = () => {
                 : "You haven't saved any workouts yet. Save your favorite lifts to find them here."}
             </p>
 
-            {/* Go To Workouts */}
             <Link
               href="/"
               className="btn mt-6 border-none bg-[#b7ff00] px-6 font-bold text-black hover:bg-[#c7ff33]"
@@ -276,114 +275,112 @@ const MyPlan = () => {
 
         ) : (
 
-          /* ================= WORKOUT CARDS ================= */
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          /* ================= WORKOUT LIST ================= */
+          <div className="space-y-4">
 
-            {currentWorkouts.map((workout) => (
+            {sortedWorkouts.map((workout) => (
 
               <article
                 key={workout.id}
-                className="group overflow-hidden rounded-2xl border border-white/10 bg-[#111316] transition duration-300 hover:-translate-y-1 hover:border-[#b7ff00]/40"
+                className="group flex flex-col gap-5 rounded-2xl border border-[#252a33] bg-[#111318] p-4 transition duration-300 hover:border-[#b7ff00]/40 sm:flex-row sm:items-center"
               >
 
-                {/* Image */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-black">
+                {/* ================= IMAGE ================= */}
+                <div className="relative h-44 w-full shrink-0 overflow-hidden rounded-xl sm:h-20 sm:w-36">
 
                   <Image
-    src={workout.image}
-    alt={workout.name}
-    fill
-    
-    className="object-cover transition duration-500 group-hover:scale-105"
-  />
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-
-                  {/* Muscle Group */}
-                  <div className="absolute left-4 top-4 rounded-full bg-black/70 px-3 py-1 text-xs font-bold text-[#b7ff00] backdrop-blur">
-                    {workout.muscleGroups?.join(" / ")}
-                  </div>
-
-                  {/* Remove */}
-                  <button
-                    onClick={() => handleRemove(workout.id)}
-                    className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-black/70 text-gray-300 backdrop-blur transition hover:bg-red-500 hover:text-white"
-                    aria-label={`Remove ${workout.name}`}
-                  >
-                    <FiTrash2 />
-                  </button>
+                    src={workout.image}
+                    alt={workout.name}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 144px"
+                    className="object-cover transition duration-500 group-hover:scale-105"
+                  />
 
                 </div>
 
-                {/* Card Body */}
-                <div className="p-5 ">
+                {/* ================= WORKOUT INFO ================= */}
+                <div className="min-w-0 flex-1">
 
-                  <h2 className="line-clamp-1 text-xl font-black uppercase">
+                  <h2 className="truncate text-lg font-black uppercase text-white">
                     {workout.name}
                   </h2>
 
-                  <p className="mt-1 text-sm text-gray-500">
+                  <p className="mt-0.5 text-sm text-gray-500">
                     {workout.equipment}
                   </p>
 
-                  {/* Information */}
-                  <div className="mt-5 grid grid-cols-3 gap-2 border-y border-white/10 py-4">
+                  {/* Stats */}
+                  <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-gray-400">
 
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-gray-600">
-                        Duration
-                      </p>
-
-                      <p className="mt-1 text-sm font-bold">
+                    {/* Duration */}
+                    <div className="flex items-center gap-1.5">
+                      <FaRegClock className="text-[#b7ff00]" />
+                      <span>
                         {workout.duration} min
-                      </p>
+                      </span>
                     </div>
 
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-gray-600">
-                        Calories
-                      </p>
-
-                      <p className="mt-1 text-sm font-bold">
+                    {/* Calories */}
+                    <div className="flex items-center gap-1.5">
+                      <FaFire className="text-[#b7ff00]" />
+                      <span>
                         {workout.caloriesBurned} kcal
-                      </p>
+                      </span>
                     </div>
 
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-gray-600">
-                        Rating
-                      </p>
+                    {/* Rating */}
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[#b7ff00]">
+                        ☆
+                      </span>
 
-                      <p className="mt-1 text-sm font-bold text-[#b7ff00]">
-                        ★ {workout.rating}
-                      </p>
+                      <span>
+                        {workout.rating}
+                      </span>
                     </div>
 
                   </div>
 
-                  {/* Buttons */}
-                  <div className="mt-5 flex gap-2">
+                </div>
 
-                    {/* View Details */}
-                    <Link
-                      href={`/workouts/${workout.id}`}
-                      className="btn btn-sm flex-1 border-white/10 bg-white/5 text-white hover:border-[#b7ff00] hover:bg-[#b7ff00] hover:text-black"
+                {/* ================= ACTIONS ================= */}
+                <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+
+                  {/* View Details */}
+                  <Link
+                    href={`/workouts/${workout.id}`}
+                    className="btn btn-sm rounded-full border border-[#39404c] bg-transparent px-4 text-xs font-medium text-white hover:border-[#b7ff00] hover:bg-transparent hover:text-[#b7ff00] sm:px-5"
+                  >
+                    View Details
+                  </Link>
+
+                  {/* Mark as Done */}
+                  {activeTab === "plan" && (
+                    <button
+                      type="button"
+                      onClick={() => markAsDone(workout.id)}
+                      className="btn btn-sm rounded-full border-none bg-[#b7ff00] px-4 text-xs font-bold text-black hover:bg-[#c7ff33] sm:px-5"
                     >
-                      View Details
-                    </Link>
+                      <FaCheck />
+                      <span className="hidden xs:inline">
+                        Mark as Done
+                      </span>
 
-                    {/* Done */}
-                    {activeTab === "plan" && (
-                      <button
-                        onClick={() => markAsDone(workout.id)}
-                        className="btn btn-sm border-none bg-[#b7ff00] text-black hover:bg-[#c7ff33]"
-                      >
-                        <FaCheck />
+                      <span className="xs:hidden">
                         Done
-                      </button>
-                    )}
+                      </span>
+                    </button>
+                  )}
 
-                  </div>
+                  {/* Remove */}
+                  <button
+                    type="button"
+                    onClick={() => handleRemove(workout.id)}
+                    aria-label={`Remove ${workout.name}`}
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl text-gray-600 transition hover:bg-white/5 hover:text-white"
+                  >
+                    ×
+                  </button>
 
                 </div>
 

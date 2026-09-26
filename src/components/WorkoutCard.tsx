@@ -16,7 +16,6 @@ const WorkoutCard = ({ workout }: WorkoutCardProps) => {
       aria-label={`View details for ${workout.name}`}
     >
       <div className="card h-full overflow-hidden rounded-xl border border-[#24272d] bg-[#15171c] shadow-none transition-all duration-300 hover:-translate-y-2 hover:border-[#b7ff00]/50">
-        {/* Image */}
         <figure className="overflow-hidden">
           <Image
             src={workout.image}
@@ -27,10 +26,7 @@ const WorkoutCard = ({ workout }: WorkoutCardProps) => {
             className="h-48 w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </figure>
-
-        {/* Card Body */}
         <div className="card-body flex flex-col p-5">
-          {/* Muscle Tags */}
           <div className="flex min-h-6 flex-wrap gap-2">
             {workout.muscleGroups.map((item) => (
               <span
@@ -41,35 +37,22 @@ const WorkoutCard = ({ workout }: WorkoutCardProps) => {
               </span>
             ))}
           </div>
-
-          {/* Title */}
           <h2 className="card-title mt-1 text-lg font-black uppercase leading-tight text-white transition-colors duration-300 group-hover:text-[#b7ff00]">
             {workout.name}
           </h2>
-
-          {/* Equipment */}
           <p className="mt-1 min-h-5 text-sm text-gray-500">
             {workout.equipment}
           </p>
-
-          {/* Divider */}
           <div className="my-2 h-px w-full bg-[#24272d]" />
-
-          {/* Stats */}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500">
-            {/* Duration */}
             <div className="flex items-center gap-1.5">
               <FaClock aria-hidden="true" />
               <span>{workout.duration} min</span>
             </div>
-
-            {/* Calories */}
             <div className="flex items-center gap-1.5">
               <FaFire aria-hidden="true" />
               <span>{workout.caloriesBurned} kcal</span>
             </div>
-
-            {/* Rating */}
             <div className="flex items-center gap-1.5">
               <FaStar aria-hidden="true" />
               <span>{workout.rating}</span>

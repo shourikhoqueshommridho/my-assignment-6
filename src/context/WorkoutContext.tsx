@@ -8,16 +8,7 @@ import {
   type ReactNode,
 } from "react";
 
-export type Workout = {
-  id: number;
-  name: string;
-  equipment: string;
-  image: string;
-  muscleGroups: string[];
-  duration: number;
-  caloriesBurned: number;
-  rating: number;
-};
+import type { Workout } from "@/types/workout";
 
 type WorkoutContextType = {
   todayPlan: Workout[];
@@ -39,7 +30,11 @@ const WorkoutContext = createContext<WorkoutContextType | undefined>(
   undefined
 );
 
-export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
+export const WorkoutProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
   const [todayPlan, setTodayPlan] = useState<Workout[]>([]);
   const [savedWorkouts, setSavedWorkouts] = useState<Workout[]>([]);
 
@@ -64,7 +59,10 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 
   // Save saved workouts
   useEffect(() => {
-    localStorage.setItem("fitlog-saved", JSON.stringify(savedWorkouts));
+    localStorage.setItem(
+      "fitlog-saved",
+      JSON.stringify(savedWorkouts)
+    );
   }, [savedWorkouts]);
 
   // Add workout to today's plan
@@ -96,7 +94,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  // Remove all workouts
+  // Remove all workouts from today's plan
   const removeAllFromPlan = () => {
     setTodayPlan([]);
   };
@@ -116,7 +114,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  // Remove from saved
+  // Remove workout from saved
   const removeFromSaved = (id: number) => {
     setSavedWorkouts((previous) =>
       previous.filter((workout) => workout.id !== id)
@@ -130,12 +128,12 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  // Check workout in plan
+  // Check if workout is already in today's plan
   const isInPlan = (id: number) => {
     return todayPlan.some((workout) => workout.id === id);
   };
 
-  // Check workout saved
+  // Check if workout is already saved
   const isSaved = (id: number) => {
     return savedWorkouts.some((workout) => workout.id === id);
   };

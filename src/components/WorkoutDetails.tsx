@@ -37,16 +37,12 @@ const WorkoutDetails = ({ workout }: WorkoutDetailsProps) => {
               priority
               className="h-[320px] w-full object-cover sm:h-[550px] lg:h-[700px]"
             />
-
-            {/* Image Overlay */}
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-6">
               <p className="text-sm font-semibold uppercase tracking-widest text-[#c6ff00]">
                 Workout Library
               </p>
             </div>
           </div>
-
-          {/* ================= CONTENT ================= */}
           <div className="flex flex-col justify-center">
             {/* Muscle Groups */}
             <div className="mb-4 flex flex-wrap gap-2">
@@ -59,20 +55,13 @@ const WorkoutDetails = ({ workout }: WorkoutDetailsProps) => {
                 </span>
               ))}
             </div>
-
-            {/* Title */}
             <h1 className="text-4xl font-black uppercase leading-tight tracking-tight sm:text-5xl">
               {workout.name}
             </h1>
-
-            {/* Description */}
             <p className="mt-5 max-w-2xl text-base leading-7 text-gray-400">
               {workout.description}
             </p>
-
-            {/* ================= KEY SPECS ================= */}
             <div className="mt-8 overflow-hidden rounded-2xl border border-[#292e37] bg-[#15181e]">
-              {/* Equipment */}
               <div className="flex items-center justify-between gap-6 border-b border-[#292e37] px-6 py-5">
                 <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
                   Equipment
@@ -82,8 +71,6 @@ const WorkoutDetails = ({ workout }: WorkoutDetailsProps) => {
                   {workout.equipment}
                 </span>
               </div>
-
-              {/* Difficulty */}
               <div className="flex items-center justify-between gap-6 border-b border-[#292e37] px-6 py-5">
                 <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
                   Difficulty
@@ -93,8 +80,6 @@ const WorkoutDetails = ({ workout }: WorkoutDetailsProps) => {
                   {workout.difficulty}
                 </span>
               </div>
-
-              {/* Sets */}
               <div className="flex items-center justify-between gap-6 border-b border-[#292e37] px-6 py-5">
                 <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
                   Sets
@@ -104,8 +89,6 @@ const WorkoutDetails = ({ workout }: WorkoutDetailsProps) => {
                   {workout.sets}
                 </span>
               </div>
-
-              {/* Reps */}
               <div className="flex items-center justify-between gap-6 border-b border-[#292e37] px-6 py-5">
                 <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
                   Reps
@@ -115,8 +98,6 @@ const WorkoutDetails = ({ workout }: WorkoutDetailsProps) => {
                   {workout.reps}
                 </span>
               </div>
-
-              {/* Duration */}
               <div className="flex items-center justify-between gap-6 border-b border-[#292e37] px-6 py-5">
                 <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
                   Duration
@@ -145,8 +126,6 @@ const WorkoutDetails = ({ workout }: WorkoutDetailsProps) => {
                   {workout.caloriesBurned} kcal
                 </span>
               </div>
-
-              {/* Rating */}
               <div className="flex items-center justify-between gap-6 px-6 py-5">
                 <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
                   Rating
@@ -161,8 +140,6 @@ const WorkoutDetails = ({ workout }: WorkoutDetailsProps) => {
                 </span>
               </div>
             </div>
-
-            {/* ================= INSTRUCTIONS ================= */}
             <section className="mt-9">
               <h2 className="text-lg font-extrabold uppercase tracking-wide">
                 Instructions
@@ -183,8 +160,6 @@ const WorkoutDetails = ({ workout }: WorkoutDetailsProps) => {
                 ))}
               </ol>
             </section>
-
-            {/* ================= ACTION BUTTONS ================= */}
             <div className="mt-9 flex flex-wrap gap-4">
               {/* Add To Plan */}
               <button
@@ -203,8 +178,6 @@ const WorkoutDetails = ({ workout }: WorkoutDetailsProps) => {
                   ? "Already in today's plan"
                   : "Add to today's plan"}
               </button>
-
-              {/* Save */}
               <button
                 type="button"
                 onClick={() => saveWorkout(workout)}

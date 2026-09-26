@@ -34,7 +34,6 @@ const Hero = () => {
             </Link>
           </div>
 
-          {/* Image */}
           <div className="flex items-center justify-center p-6 sm:p-8 md:p-10">
             <Image
               src="/image/banner.png"
