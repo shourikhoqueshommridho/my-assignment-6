@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaClock, FaFire, FaStar } from "react-icons/fa";
 
-
+import type { Workout } from "@/types/workout";
 
 type WorkoutCardProps = {
   workout: Workout;
@@ -12,30 +12,30 @@ const WorkoutCard = ({ workout }: WorkoutCardProps) => {
   return (
     <Link
       href={`/workouts/${workout.id}`}
-      className="block cursor-pointer group"
+      className="group block h-full"
+      aria-label={`View details for ${workout.name}`}
     >
-      <div className="card bg-[#15171c] border border-[#24272d] shadow-none overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-2 hover:border-[#b7ff00]/50">
-
+      <div className="card h-full overflow-hidden rounded-xl border border-[#24272d] bg-[#15171c] shadow-none transition-all duration-300 hover:-translate-y-2 hover:border-[#b7ff00]/50">
         {/* Image */}
         <figure className="overflow-hidden">
           <Image
             src={workout.image}
-            alt={workout.name}
+            alt={`${workout.name} workout`}
             width={500}
             height={300}
-            className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="h-48 w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </figure>
 
         {/* Card Body */}
-        <div className="card-body p-5">
-
+        <div className="card-body flex flex-col p-5">
           {/* Muscle Tags */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex min-h-6 flex-wrap gap-2">
             {workout.muscleGroups.map((item) => (
               <span
                 key={item}
-                className="badge bg-[#b7ff00] text-black border-none font-bold text-[10px]"
+                className="badge border-none bg-[#b7ff00] text-[10px] font-bold text-black"
               >
                 {item}
               </span>
@@ -43,40 +43,38 @@ const WorkoutCard = ({ workout }: WorkoutCardProps) => {
           </div>
 
           {/* Title */}
-          <h2 className="card-title text-white uppercase text-lg font-black group-hover:text-[#b7ff00] transition-colors duration-300">
+          <h2 className="card-title mt-1 text-lg font-black uppercase leading-tight text-white transition-colors duration-300 group-hover:text-[#b7ff00]">
             {workout.name}
           </h2>
 
           {/* Equipment */}
-          <p className="text-gray-500 text-sm">
+          <p className="mt-1 min-h-5 text-sm text-gray-500">
             {workout.equipment}
           </p>
 
-          <div className="divider my-1 border-[#24272d]"></div>
+          {/* Divider */}
+          <div className="my-2 h-px w-full bg-[#24272d]" />
 
-          {/* Bottom Info */}
-          <div className="flex items-center gap-4 text-gray-500 text-xs">
-
+          {/* Stats */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500">
             {/* Duration */}
-            <div className="flex items-center gap-1">
-              <FaClock />
+            <div className="flex items-center gap-1.5">
+              <FaClock aria-hidden="true" />
               <span>{workout.duration} min</span>
             </div>
 
             {/* Calories */}
-            <div className="flex items-center gap-1">
-              <FaFire />
+            <div className="flex items-center gap-1.5">
+              <FaFire aria-hidden="true" />
               <span>{workout.caloriesBurned} kcal</span>
             </div>
 
             {/* Rating */}
-            <div className="flex items-center gap-1">
-              <FaStar />
+            <div className="flex items-center gap-1.5">
+              <FaStar aria-hidden="true" />
               <span>{workout.rating}</span>
             </div>
-
           </div>
-
         </div>
       </div>
     </Link>
@@ -84,4 +82,3 @@ const WorkoutCard = ({ workout }: WorkoutCardProps) => {
 };
 
 export default WorkoutCard;
-

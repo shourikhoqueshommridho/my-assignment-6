@@ -1,6 +1,5 @@
 
-
-type Workout = {
+export type Workout = {
   id: number;
   name: string;
   equipment: string;
@@ -15,3 +14,4 @@ type Workout = {
   description: string;
   instructions: string[];
 };
+
