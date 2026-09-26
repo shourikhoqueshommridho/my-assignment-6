@@ -9,6 +9,7 @@ import {
 } from "react";
 
 import { toast } from "react-toastify";
+
 import type { Workout } from "@/types/workout";
 
 type WorkoutContextType = {
@@ -63,67 +64,75 @@ export const WorkoutProvider = ({
     );
   }, [savedWorkouts]);
 
+  // Add workout to today's plan
   const addToPlan = (workout: Workout) => {
-    setTodayPlan((previous) => {
-      const alreadyExists = previous.some(
-        (item) => item.id === workout.id
+    const alreadyExists = todayPlan.some(
+      (item) => item.id === workout.id
+    );
+
+    if (alreadyExists) {
+      return;
+    }
+
+    if (todayPlan.length >= 5) {
+      toast.error(
+        "You can add maximum 5 workouts to today's plan."
       );
+      return;
+    }
 
-      if (alreadyExists) {
-        return previous;
-      }
+    setTodayPlan((previous) => [...previous, workout]);
 
-      if (previous.length >= 5) {
-        toast.error(
-          "You can add maximum 5 workouts to today's plan."
-        );
-        return previous;
-      }
-
-      return [...previous, workout];
-    });
+    toast.success("Workout added to today's plan!");
   };
 
+  // Remove workout from today's plan
   const removeFromPlan = (id: number) => {
     setTodayPlan((previous) =>
       previous.filter((workout) => workout.id !== id)
     );
   };
 
+  // Remove all workouts
   const removeAllFromPlan = () => {
     setTodayPlan([]);
   };
 
+  // Save workout
   const saveWorkout = (workout: Workout) => {
-    setSavedWorkouts((previous) => {
-      const alreadySaved = previous.some(
-        (item) => item.id === workout.id
-      );
+    const alreadySaved = savedWorkouts.some(
+      (item) => item.id === workout.id
+    );
 
-      if (alreadySaved) {
-        return previous;
-      }
+    if (alreadySaved) {
+      return;
+    }
 
-      return [...previous, workout];
-    });
+    setSavedWorkouts((previous) => [...previous, workout]);
+
+    toast.success("Workout saved for later!");
   };
 
+  // Remove saved workout
   const removeFromSaved = (id: number) => {
     setSavedWorkouts((previous) =>
       previous.filter((workout) => workout.id !== id)
     );
   };
 
+  // Mark workout as done
   const markAsDone = (id: number) => {
     setTodayPlan((previous) =>
       previous.filter((workout) => workout.id !== id)
     );
   };
 
+  // Check if workout is in plan
   const isInPlan = (id: number) => {
     return todayPlan.some((workout) => workout.id === id);
   };
 
+  // Check if workout is saved
   const isSaved = (id: number) => {
     return savedWorkouts.some((workout) => workout.id === id);
   };

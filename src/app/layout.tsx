@@ -1,15 +1,16 @@
-
 import type { Metadata } from "next";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Providers from "./providers";
+
 import "./globals.css";
+
 export const metadata: Metadata = {
   title: "FitLog",
   description: "Workout Library",
 };
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,7 +23,8 @@ export default function RootLayout({
           <Navbar />
 
           {children}
- <Footer />
+
+          <Footer />
         </Providers>
       </body>
     </html>
